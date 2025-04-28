@@ -1,0 +1,52 @@
+grep a1 < infile | wc -w > outfile
+
+	- Con (<) el contenido del archivo infile va a la standard input del comando grep
+	- Con (|) va el output del grep al input de wc
+	- Con (>) escribe el output del comando wc en el archivo outfile
+
+Diferencias (>) y (>>):
+	- (>) Remplaza el contenido del archivo de la derecha con la salida del comando de la izq.
+	- (>>) Añade la salida del comando de la izq al final del archivo.
+	
+(<<) -> Lee desde la entrada estandard hasta encontrar un valor en especifico.
+
+Funciones:
+
+- access (int access(const char *pathname, int mode)) --> Comprueba los permisos de acceso de un archivo antes de abrirlo.
+
+	- pathname --> Cadena que indica que indica del archivo que quieras verificar ;
+	- mode --> Entero que indica el tipo de permiso que quieres comprobar.
+
+- dup2 (int dup2(int oldfd, int newfd)) --> Duplica un fd redirigiendolo a un fd que tu elijas.
+
+	- oldfd --> fd de archivo existente.
+	- newfd --> fd al que quieres que apunte al mismo fd de oldfd.
+
+- pipe (int pipe(int pipefd[2])) --> Crea conexion de comunicacion unidireccional entre 2 extremos uno para leer y otro para escribir
+
+	- pipefd[2] --> pipefd[0] -> fd lectura
+					pipefd[1] -> fd escritura
+
+- fork (pid_t fork(void)) --> Crea un nuevo proceso, este es una copia casi extacta del que llama a fork
+
+	- El proceso padre devuelve el PID (Process id) del hijo
+	- El proceso hijo devuelve 0
+	- Si hay error devuelve -1 y no crea.
+
+- waitpid (pid_t waitpid(pid_t pid, int *status, int options)) --> Permite que un proceso padre espere a que el hijo termine 	
+
+- wait (pid_t wait(int *status)) --> Bloquea el proceso padre hasta que cualquier hijo termine.
+
+- execve (int execve(const char *filename, char *const argv[], char *const envp[])) --> Destruye el programa que estaba corriendo y carga otro
+
+	- filename --> Ruta al ejecutable
+	- argv[] --> argv[0] -> nombre programa
+				 argv[1], argv[2]... -> args
+	- envp[] --> array de cadenas con las variables de entorno.
+
+- unlink (int unlink(const char *pathname)) --> Borra un archivo, quitando su entrada del directorio.
+
+	- pathname -> Ruta del archivo
+
+
+

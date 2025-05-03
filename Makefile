@@ -6,7 +6,7 @@
 #    By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/03 17:00:20 by alejandj          #+#    #+#              #
-#    Updated: 2025/05/03 17:07:18 by alejandj         ###   ########.fr        #
+#    Updated: 2025/05/03 19:51:22 by alejandj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ LIBFT = $(LIBDIR)/libft.a
 
 SRC =	src/pipex.c		\
 
-OBJECTS = $(SRC:.c = .o)
+OBJECTS = $(SRC:.c=.o)
 
 all: $(NAME)
 
@@ -37,7 +37,7 @@ $(LIBFT):
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(OBJECTS) $(OBJECTS_BONUS)
+	@rm -rf $(OBJECTS)
 	@echo "Object files removed."
 
 fclean: clean

@@ -6,7 +6,7 @@
 #    By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/03 17:00:20 by alejandj          #+#    #+#              #
-#    Updated: 2025/05/03 19:51:22 by alejandj         ###   ########.fr        #
+#    Updated: 2025/05/04 13:15:29 by alejandj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,13 +15,17 @@ NAME = pipex
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g -Iincludes
 
-# Libft
-LIBDIR = ./libft
+# Directorios
+LIBDIR = libft/
+OBJDIR = obj/
+
+SRC =	src/pipex.c			\
+		src/pipex_utils.c	\
+
+OBJECTS = $(SRC:src/%.c=$(OBJDIR)/%.o)
+
+# Libreria
 LIBFT = $(LIBDIR)/libft.a
-
-SRC =	src/pipex.c		\
-
-OBJECTS = $(SRC:.c=.o)
 
 all: $(NAME)
 
@@ -33,8 +37,10 @@ $(NAME) : $(OBJECTS) $(LIBFT)
 $(LIBFT):
 	make -C $(LIBDIR)
 
-%.o: %.c pipex.h $(LIBDIR)/libft.h
-	$(CC) $(CFLAGS) -c $< -o $@
+# Regla para crear los .o en el directorio obj
+$(OBJDIR)/%.o: src/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJECTS)

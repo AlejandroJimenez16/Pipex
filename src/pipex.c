@@ -6,158 +6,105 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 16:53:38 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/03 19:01:59 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/04 14:37:08 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/pipex.h"
+#include "../includes/pipex.h"
 
-void	free_arr(char **arr)
+void	execute_commands(char *env[], char **cmd)
 {
-	int	i;
+	char	**arr_path;
+	int		arr_path_id;
+	char	*path;
+	char	*temp;
 
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
+	path = ft_strdup("");
+	arr_path = get_path_cmd(env);
+	arr_path_id = 0;
+	while (arr_path[arr_path_id] != NULL)
 	{
-		free(arr[i]);
-		i++;
+		temp = ft_strjoin(arr_path[arr_path_id], "/");
+		path = ft_strjoin(temp, cmd[0]);
+		if (access(path, X_OK) == 0)
+		{
+			if (execve(path, cmd, env) == -1)
+				print_errors("ERROR: execve process1");
+			break ;
+		}
+		else
+			arr_path_id++;
 	}
-	free(arr);
 }
 
-char	**get_path_cmd(char *env[])
+void	child_process_1(t_pipex *pipex)
 {
-	int		i;
-	char	**arr_path;
-
-	i = 0;
-	while (env[i] != NULL)
+	pipex->process1 = fork();
+	if (pipex->process1 == -1)
+		print_errors("ERROR: creating process1");
+	else if (pipex->process1 == 0)
 	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
-			arr_path = ft_split(env[i] + 5, ':');
-			break;
-		}
-		i++;
+		close(pipex->pipefd[0]);
+		if (dup2(pipex->fd_in, STDIN_FILENO) == -1)
+			print_errors("ERROR: dup2 process1 (stdin)");
+		if (dup2(pipex->pipefd[1], STDOUT_FILENO) == -1)
+			print_errors("ERROR: dup2 process1 (stdout)");
+		execute_commands(pipex->env, pipex->cmd1);
 	}
-	return (arr_path);
+}
+
+void	child_process_2(t_pipex *pipex)
+{
+	pipex->process2 = fork();
+	if (pipex->process2 == -1)
+		print_errors("Error creating process2");
+	else if (pipex->process2 == 0)
+	{
+		close(pipex->pipefd[1]);
+		if (dup2(pipex->pipefd[0], STDIN_FILENO) == -1)
+			print_errors("ERROR: dup2 process2 (stdin)");
+		if (dup2(pipex->fd_out, STDOUT_FILENO) == -1)
+			print_errors("ERROR: dup2 process2 (stdout)");
+		execute_commands(pipex->env, pipex->cmd2);
+	}
+}
+
+void	init_fds(int *fd_in, int *fd_out, char *infile, char *outfile)
+{
+	*fd_in = open(infile, O_RDONLY);
+	*fd_out = open(outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (*fd_in < 0)
+		print_errors("ERROR: opening infile");
+	if (*fd_out < 0)
+		print_errors("ERROR: opening outfile");
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
-	int		fd_in;
-	int		fd_out;
-	
-	char	**cmd1;
-	char	**cmd2;
-	
+	t_pipex pipex;
 	int		pipe_status;
-	int		pipefd[2];
 
-	pid_t	process1;
-	pid_t	process2;
-	
 	if (argc == 5)
 	{
-		// Comprobar los fds
-		fd_in = open(argv[1], O_RDONLY);
-		fd_out = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		if (fd_in < 0)
-		{
-			perror("ERROR: opening infile");
-			exit(EXIT_FAILURE);
-		}	
-		if (fd_out < 0)
-		{
-			perror("ERROR: opening outfile");
-			exit(EXIT_FAILURE);
-		}
-		
-		// Parsear los comandos
-		cmd1 = ft_split(argv[2], ' ');
-		cmd2 = ft_split(argv[3], ' ');
-
-		// Crear la pipe
-		pipe_status = pipe(pipefd);
+		pipex.env = env;
+		init_fds(&pipex.fd_in, &pipex.fd_out, argv[1], argv[4]);
+		pipex.cmd1 = ft_split(argv[2], ' ');
+		if (!pipex.cmd1)
+			print_errors("ERROR: parsing command 1");
+		pipex.cmd2 = ft_split(argv[3], ' ');
+		if (!pipex.cmd2)
+			print_errors("ERROR: parsing command 2");
+		pipe_status = pipe(pipex.pipefd);
 		if (pipe_status == -1)
-		{
-			perror("ERROR: creating pipe");
-			exit(EXIT_FAILURE);
-		}
-
-		// Crear procesos
-		process1 = fork();
-		if (process1 == -1)
-		{
-			perror("ERROR: creating process1");
-			exit(EXIT_FAILURE);
-		}
-		else if (process1 == 0)
-		{
-			close(pipefd[0]);
-			
-			// Ahora el programa en vez de leer de la entrada estandard lee desde el archivo
-			if (dup2(fd_in, STDIN_FILENO) == -1)
-			{
-				perror("ERROR: dup2 process1 (stdin)");
-				exit(EXIT_FAILURE);
-			}
-			// En vez de escribir en la salida estandard escribe en el extremo de escritura de la pipe
-			if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-			{
-				perror("ERROR: dup2 process1 (stdout)");
-				exit(EXIT_FAILURE);
-			}
-			// Se ejecuta el primer comando (Tengo que hacerlo dinamico para cualquiera)
-			if (execve("/bin/grep", cmd1, env) == -1)
-			{
-				perror("ERROR: execve process1");
-				exit(EXIT_FAILURE);
-			}
-		}
-		process2 = fork();
-		if (process2 == -1)
-		{
-			perror("Error creating process2");
-			exit(EXIT_FAILURE);
-		}
-		else if (process2 == 0)
-		{
-			close(pipefd[1]);
-
-			// El programa lee en vez de la salida estandard lee de la pipe
-			if (dup2(pipefd[0], STDIN_FILENO) == -1)
-			{
-				perror("ERROR: dup2 process2 (stdin)");
-				exit(EXIT_FAILURE);
-			}
-			// Envia la salida al archivo
-			if (dup2(fd_out, STDOUT_FILENO) == -1)
-			{
-				perror("ERROR: dup2 process2 (stdout)");
-				exit(EXIT_FAILURE);
-			}
-			// Se ejecuta el segundo comando
-			if (execve("/bin/wc", cmd2, env) == -1)
-			{
-				perror("ERROR: execve process2");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		// Cerrar pipe
-		close(pipefd[0]);
-		close(pipefd[1]);
-		
-		// Espera a que los hijos acaben
-		waitpid(process1, NULL, 0);
-		waitpid(process2, NULL, 0);
-
-		// Liberar
-		free_arr(cmd1);
-		free_arr(cmd2);
+			print_errors("ERROR: creating pipe");
+		child_process_1(&pipex);
+		child_process_2(&pipex);
+		close(pipex.pipefd[0]);
+		close(pipex.pipefd[1]);
+		waitpid(pipex.process1, NULL, 0);
+		waitpid(pipex.process2, NULL, 0);
+		free_arr(pipex.cmd1);
+		free_arr(pipex.cmd2);
 	}
 	else
 	{
@@ -166,30 +113,3 @@ int	main(int argc, char *argv[], char *env[])
 		return (1);
 	}
 }
-
-/*
-int main(int argc, char *argv[], char *env[])
-{
-	ft_printf("%d\n", argc);
-	ft_printf("%s\n", argv[1]);
-
-	int i = 0;
-	char **arr;
-	while (env[i] != NULL)
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
-			arr = ft_split(env[i] + 5, ':');
-			int j = 0;
-			while (arr[j])
-			{
-				ft_printf("%s%s%d\n", arr[j], " ", j);
-				j++;
-			}
-			break;
-		}
-		i++;
-	}
-	return 0;
-}
-*/

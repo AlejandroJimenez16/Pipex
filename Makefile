@@ -6,7 +6,7 @@
 #    By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/03 17:00:20 by alejandj          #+#    #+#              #
-#    Updated: 2025/05/04 13:15:29 by alejandj         ###   ########.fr        #
+#    Updated: 2025/05/05 16:30:13 by alejandj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ OBJDIR = obj/
 
 SRC =	src/pipex.c			\
 		src/pipex_utils.c	\
+		src/execution.c		\
 
 OBJECTS = $(SRC:src/%.c=$(OBJDIR)/%.o)
 
@@ -31,7 +32,23 @@ all: $(NAME)
 
 # Compilar el ejecutable
 $(NAME) : $(OBJECTS) $(LIBFT)
+	@echo ""
+	@echo "\033[0;31m⚙️ COMPILANDO... 🚀\033[0m"
+	@echo ""
 	$(CC) $(CFLAGS) $(OBJECTS) -L$(LIBDIR) -lft -o $(NAME)
+
+	@echo "\033[0;32m  ____    _                       \033[0m"
+	@echo "\033[0;32m |  _ \  (_)  _ __     ___  __  __\033[0m"
+	@echo "\033[0;32m | |_) | | | | '_ \   / _ \ \ \/ /\033[0m"
+	@echo "\033[0;32m |  __/  | | | |_) | |  __/  >  < \033[0m"
+	@echo "\033[0;32m |_|     |_| | .__/   \___| /_/\_\\ \033[0m"
+	@echo "\033[0;32m             |_|                   \033[0m"
+
+	@echo ""
+	@echo "✅ \033[0;32mPIPEX COMPILADO EXITOSAMENTE!!!\033[0m 🎉🎉"
+	@echo ""
+	@echo "🔧 Listo para ejecutar. ¡Vamos a hacer magia! ✨"
+	@echo ""
 
 # Compilar la biblioteca
 $(LIBFT):
@@ -44,11 +61,11 @@ $(OBJDIR)/%.o: src/%.c
 
 clean:
 	@rm -rf $(OBJECTS)
-	@echo "Object files removed."
+	@echo "🧹 \033[0;32mObject files removed successfully! 🗑️\033[0m"
 
 fclean: clean
 	@rm -rf $(NAME)
-	@echo "Executable $(NAME) removed"
+	@echo "🚀 \033[0;32mExecutable $(NAME) has been removed! Bye bye! 👋\033[0m"
 
 re: fclean all
 

@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 12:32:34 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/05 15:45:57 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/11 21:53:32 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_pipex
 
 void		free_arr(char **arr);
 void		print_errors(char *error, char *outfile);
+void		print_cmd_error(char *error, char *cmd, char *outfile);
 void		fail_args(void);
 char		**get_path_cmd(char *env[]);
 void		execute_commands(char *env[], char **cmd, char *outfile);

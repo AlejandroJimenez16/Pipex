@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/05 16:30:52 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/11 21:53:11 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,9 @@ void	execute_commands(char *env[], char **cmd, char *outfile)
 		{
 			if (execve(path, cmd, env) == -1)
 				print_errors("ERROR: execve process1", outfile);
-			break ;
 		}
 		else
 			arr_path_id++;
 	}
-	print_errors("ERROR: Incorrect command", outfile);
+	print_cmd_error("ERROR: Incorrect command: ", cmd[0], outfile);
 }

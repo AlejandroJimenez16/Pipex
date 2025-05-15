@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 16:53:38 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/05 16:51:04 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:27:50 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	child_process_2(t_pipex *pipex)
 
 void	cleanup(t_pipex *pipex)
 {
+	close(pipex->fd_in);
+	close(pipex->fd_out);
 	close(pipex->pipefd[0]);
 	close(pipex->pipefd[1]);
 	waitpid(pipex->process1, NULL, 0);

@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/11 21:53:11 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/16 00:17:16 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,32 @@ void	execute_commands(char *env[], char **cmd, char *outfile)
 	char	*path;
 	char	*temp;
 
-	path = ft_strdup("");
+	path = NULL;
 	arr_path = get_path_cmd(env);
 	arr_path_id = 0;
 	while (arr_path[arr_path_id] != NULL)
 	{
 		temp = ft_strjoin(arr_path[arr_path_id], "/");
 		path = ft_strjoin(temp, cmd[0]);
+		free(temp);
 		if (access(path, X_OK) == 0)
 		{
 			if (execve(path, cmd, env) == -1)
+			{
+				free(path);
+				free_arr(cmd);
+				free_arr(arr_path);
 				print_errors("ERROR: execve process1", outfile);
+			}
 		}
 		else
+		{
+			free(path);
 			arr_path_id++;
+		}
 	}
+	free_arr(arr_path);
 	print_cmd_error("ERROR: Incorrect command: ", cmd[0], outfile);
+	free_arr(cmd);
+	exit(EXIT_FAILURE);
 }

@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 12:52:47 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/11 21:52:53 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:06:57 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	print_cmd_error(char *error, char *cmd, char *outfile)
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd("\033[0m\n", 2);
 	unlink(outfile);
-	exit(EXIT_FAILURE);
 }
 
 void	fail_args(void)

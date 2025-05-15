@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/16 00:17:16 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/16 01:04:40 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	execute_commands(char *env[], char **cmd, char *outfile)
 			if (execve(path, cmd, env) == -1)
 			{
 				free(path);
-				free_arr(cmd);
 				free_arr(arr_path);
 				print_errors("ERROR: execve process1", outfile);
 			}

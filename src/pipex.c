@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 16:53:38 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/16 01:04:57 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/21 23:34:07 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	child_process_1(t_pipex *pipex)
 		if (dup2(pipex->pipefd[1], STDOUT_FILENO) == -1)
 			print_errors("ERROR: dup2 process1 (stdout)", pipex->outfile);
 		execute_commands(pipex->env, pipex->cmd1, pipex->outfile);
+		free_arr(pipex->cmd2);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -41,6 +43,8 @@ void	child_process_2(t_pipex *pipex)
 		if (dup2(pipex->fd_out, STDOUT_FILENO) == -1)
 			print_errors("ERROR: dup2 process2 (stdout)", pipex->outfile);
 		execute_commands(pipex->env, pipex->cmd2, pipex->outfile);
+		free_arr(pipex->cmd1);
+		exit(EXIT_FAILURE);
 	}
 }
 

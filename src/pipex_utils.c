@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 12:52:47 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/16 01:04:30 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/24 01:40:59 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,16 @@ void	print_errors(char *error, char *outfile)
 	exit(EXIT_FAILURE);
 }
 
-void	print_cmd_error(char *error, char *cmd, char *outfile)
+void	print_cmd_error(char *cmd, char *outfile)
 {
-	ft_putstr_fd("\033[1;31m", 2);
-	ft_putstr_fd(error, 2);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("\033[0m\n", 2);
-	unlink(outfile);
+	char *msg;
+
+	msg = "ERROR: Incorrect command: ";
+	write(2, "\033[1;31m", 7);
+    write(2, msg, ft_strlen(msg));
+    write(2, cmd, ft_strlen(cmd));
+    write(2, "\033[0m\n", 5);
+    unlink(outfile);
 }
 
 void	fail_args(void)

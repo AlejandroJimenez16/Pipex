@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/22 00:14:32 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/24 02:12:11 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,21 +55,32 @@ void	execute_commands(char *env[], char **cmd, char *outfile)
 	int		arr_path_id;
 	char	*path;
 
-	arr_path = get_path_cmd(env);
-	arr_path_id = 0;
-	while (arr_path[arr_path_id] != NULL)
+	//Ejecutar rutas absolutas
+	if(cmd[0][0] == '.' || cmd[0][0] == '/')
 	{
-		path = create_path(arr_path[arr_path_id], cmd[0]);
-		if (access(path, X_OK) == 0)
-		{
-			if (execve(path, cmd, env) == -1)
-				manage_execve_error(path, arr_path, outfile);
-		}
-		else
-			free(path);
-		arr_path_id++;
+		if (access(cmd[0], X_OK) == 0)
+			execve(cmd[0], cmd, env);
+		print_cmd_error(cmd[0], outfile);
+		free_arr(cmd);
 	}
-	free_arr(arr_path);
-	print_cmd_error("ERROR: Incorrect command: ", cmd[0], outfile);
-	free_arr(cmd);
+	else
+	{
+		arr_path = get_path_cmd(env);
+		arr_path_id = 0;
+		while (arr_path[arr_path_id] != NULL)
+		{
+			path = create_path(arr_path[arr_path_id], cmd[0]);
+			if (access(path, X_OK) == 0)
+			{
+				if (execve(path, cmd, env) == -1)
+					manage_execve_error(path, arr_path, outfile);
+			}
+			else
+				free(path);
+			arr_path_id++;
+		}
+		free_arr(arr_path);
+		print_cmd_error(cmd[0], outfile);
+		free_arr(cmd);
+	}
 }

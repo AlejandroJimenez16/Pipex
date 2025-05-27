@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/26 15:42:57 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:41:27 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	**get_path_cmd(char *env[])
 	int		i;
 	char	**arr_path;
 
+	if (!env)
+		return (NULL);
 	i = 0;
 	arr_path = NULL;
 	while (env[i] != NULL)
@@ -77,7 +79,7 @@ void	execute_commands(char *env[], char **cmd)
 	{
 		arr_path = get_path_cmd(env);
 		arr_path_id = 0;
-		while (arr_path[arr_path_id] != NULL)
+		while (arr_path && arr_path[arr_path_id] != NULL)
 		{
 			path = create_path(arr_path[arr_path_id++], cmd[0]);
 			if (access(path, X_OK) == 0)

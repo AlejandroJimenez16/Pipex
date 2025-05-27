@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 12:52:47 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/26 15:43:30 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:15:01 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,17 @@ void	print_errors(char *error)
 
 void	print_cmd_error(char *error, char *cmd)
 {
-	write(2, "\033[1;31m", 7);
-	write(2, error, ft_strlen(error));
-	write(2, cmd, ft_strlen(cmd));
-	write(2, "\033[0m\n", 5);
+	char	*temp1;
+	char	*temp2;
+	char	*final;
+
+	temp1 = ft_strjoin(error, ": ");
+	temp2 = ft_strjoin(temp1, cmd);
+	final = ft_strjoin(temp2, "\n");
+	write(2, final, ft_strlen(final));
+	free(temp1);
+	free(temp2);
+	free(final);
 }
 
 void	fail_args(void)

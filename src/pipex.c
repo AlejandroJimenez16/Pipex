@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 16:53:38 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/26 15:35:20 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:18:41 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,18 @@ void	child_process_2(t_pipex *pipex)
 
 void	cleanup(t_pipex *pipex)
 {
+	int	status2;
+
 	close(pipex->fd_in);
 	close(pipex->fd_out);
 	close(pipex->pipefd[0]);
 	close(pipex->pipefd[1]);
 	waitpid(pipex->process1, NULL, 0);
-	waitpid(pipex->process2, NULL, 0);
+	waitpid(pipex->process2, &status2, 0);
 	free_arr(pipex->cmd1);
 	free_arr(pipex->cmd2);
+	if (WIFEXITED(status2))
+		exit(WEXITSTATUS(status2));
 }
 
 void	init_fds(int *fd_in, int *fd_out, char *infile, char *outfile)

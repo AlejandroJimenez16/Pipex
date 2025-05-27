@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/27 13:41:27 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:56:15 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ void	execute_absolute_path(char **cmd, char *env[])
 {
 	if (access(cmd[0], F_OK) != 0)
 	{
-		print_cmd_error("ERROR: Command not found: ", cmd[0]);
+		print_cmd_error("Command not found", cmd[0]);
 		free_arr(cmd);
 	}
 	else if (access(cmd[0], X_OK) != 0)
 	{
-		print_cmd_error("ERROR: Permission denied: ", cmd[0]);
+		print_cmd_error("permission denied", cmd[0]);
 		free_arr(cmd);
 	}
 	else
@@ -91,7 +91,7 @@ void	execute_commands(char *env[], char **cmd)
 				free(path);
 		}
 		free_arr(arr_path);
-		print_cmd_error("ERROR: Command not found: ", cmd[0]);
+		print_cmd_error("command not found", cmd[0]);
 		free_arr(cmd);
 	}
 }

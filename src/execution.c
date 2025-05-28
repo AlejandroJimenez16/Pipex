@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/28 21:56:42 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/28 23:59:21 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ void	*create_path(char *base, char *cmd)
 
 int	manage_execve_error(char **arr_path, char *path, char **cmd)
 {
+	ft_putstr_fd("ERROR: execve failed for command: ", 2);
+	ft_putstr_fd(cmd[0], 2);
+	ft_putstr_fd("\n", 2);
 	free_arr(arr_path);
 	free(path);
 	free_arr(cmd);

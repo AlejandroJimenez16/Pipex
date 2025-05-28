@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 12:52:47 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/28 19:33:11 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/28 23:34:23 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,8 @@ void	print_errors(char *error, char **cmd1, char **cmd2)
 {
 	if (error)
 	{
-		ft_putstr_fd("\033[1;31m", 2);
 		ft_putstr_fd(error, 2);
-		ft_putstr_fd("\033[0m\n", 2);
+		ft_putstr_fd("\n", 2);
 	}
 	free_arr(cmd1);
 	free_arr(cmd2);

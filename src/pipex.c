@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 16:53:38 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/28 23:37:58 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/29 01:10:15 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ void	child_process_1(t_pipex *pipex)
 	{
 		close(pipex->pipefd[0]);
 		if (dup2(pipex->fd_in, STDIN_FILENO) == -1)
-			print_errors("ERROR: dup2 process1 (stdin)", pipex->cmd1, pipex->cmd2);
+			print_errors("ERROR: dup2 process1 (stdin)",
+				pipex->cmd1, pipex->cmd2);
 		if (dup2(pipex->pipefd[1], STDOUT_FILENO) == -1)
-			print_errors("ERROR: dup2 process1 (stdout)", pipex->cmd1, pipex->cmd2);
+			print_errors("ERROR: dup2 process1 (stdout)",
+				pipex->cmd1, pipex->cmd2);
 		exit_code = execute_commands(pipex->env, pipex->cmd1);
 		free_arr(pipex->cmd2);
 		exit(exit_code);
@@ -43,9 +45,11 @@ void	child_process_2(t_pipex *pipex)
 	{
 		close(pipex->pipefd[1]);
 		if (dup2(pipex->pipefd[0], STDIN_FILENO) == -1)
-			print_errors("ERROR: dup2 process2 (stdin)", pipex->cmd1, pipex->cmd2);
+			print_errors("ERROR: dup2 process2 (stdin)",
+				pipex->cmd1, pipex->cmd2);
 		if (dup2(pipex->fd_out, STDOUT_FILENO) == -1)
-			print_errors("ERROR: dup2 process2 (stdout)", pipex->cmd1, pipex->cmd2);
+			print_errors("ERROR: dup2 process2 (stdout)",
+				pipex->cmd1, pipex->cmd2);
 		exit_code = execute_commands(pipex->env, pipex->cmd2);
 		free_arr(pipex->cmd1);
 		exit(exit_code);
@@ -73,9 +77,17 @@ void	init_fds(int *fd_in, int *fd_out, char *infile, char *outfile)
 	*fd_in = open(infile, O_RDONLY);
 	*fd_out = open(outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (*fd_in < 0)
-		ft_putstr_fd("ERROR: opening infile\n", 2);
+	{
+		ft_putstr_fd("ERROR: opening infile: ", 2);
+		ft_putstr_fd(infile, 2);
+		ft_putstr_fd("\n", 2);
+	}
 	if (*fd_out < 0)
-		ft_putstr_fd("ERROR: opening outfile\n", 2);
+	{
+		ft_putstr_fd("ERROR: opening outfile: ", 2);
+		ft_putstr_fd(outfile, 2);
+		ft_putstr_fd("\n", 2);
+	}
 }
 
 int	main(int argc, char *argv[], char *env[])

@@ -6,32 +6,11 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/27 16:56:15 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/28 21:56:42 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-
-char	**get_path_cmd(char *env[])
-{
-	int		i;
-	char	**arr_path;
-
-	if (!env)
-		return (NULL);
-	i = 0;
-	arr_path = NULL;
-	while (env[i] != NULL)
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
-			arr_path = ft_split(env[i] + 5, ':');
-			break ;
-		}
-		i++;
-	}
-	return (arr_path);
-}
 
 void	*create_path(char *base, char *cmd)
 {
@@ -44,54 +23,71 @@ void	*create_path(char *base, char *cmd)
 	return (full);
 }
 
-void	manage_execve_error(char *path, char **arr_path)
+int	manage_execve_error(char **arr_path, char *path, char **cmd)
 {
-	free(path);
 	free_arr(arr_path);
-	print_errors("ERROR: execve process1");
+	free(path);
+	free_arr(cmd);
+	return (1);
 }
 
-void	execute_absolute_path(char **cmd, char *env[])
+int	execute_absolute_path(char **cmd, char *env[])
 {
 	if (access(cmd[0], F_OK) != 0)
 	{
 		print_cmd_error("Command not found", cmd[0]);
 		free_arr(cmd);
+		return (127);
 	}
 	else if (access(cmd[0], X_OK) != 0)
 	{
 		print_cmd_error("permission denied", cmd[0]);
 		free_arr(cmd);
+		return (126);
 	}
 	else
 		execve(cmd[0], cmd, env);
+	return (1);
 }
 
-void	execute_commands(char *env[], char **cmd)
+int	execute_normal_command(char *env[], char **cmd)
 {
 	char	**arr_path;
 	int		arr_path_id;
 	char	*path;
 
-	if (cmd[0][0] == '.' || cmd[0][0] == '/')
-		execute_absolute_path(cmd, env);
-	else
+	arr_path = get_path_cmd(env);
+	arr_path_id = 0;
+	while (arr_path && arr_path[arr_path_id] != NULL)
 	{
-		arr_path = get_path_cmd(env);
-		arr_path_id = 0;
-		while (arr_path && arr_path[arr_path_id] != NULL)
+		path = create_path(arr_path[arr_path_id++], cmd[0]);
+		if (access(path, X_OK) == 0)
 		{
-			path = create_path(arr_path[arr_path_id++], cmd[0]);
-			if (access(path, X_OK) == 0)
-			{
-				if (execve(path, cmd, env) == -1)
-					manage_execve_error(path, arr_path);
-			}
-			else
-				free(path);
+			if (execve(path, cmd, env) == -1)
+				return (manage_execve_error(arr_path, path, cmd));
 		}
-		free_arr(arr_path);
-		print_cmd_error("command not found", cmd[0]);
-		free_arr(cmd);
+		else
+			free(path);
 	}
+	free_arr(arr_path);
+	print_cmd_error("command not found", cmd[0]);
+	free_arr(cmd);
+	return (127);
+}
+
+int	execute_commands(char *env[], char **cmd)
+{
+	int		exit_code;
+
+	if (!cmd || !cmd[0] || !cmd[0][0])
+	{
+		print_cmd_error("command not found", "");
+		free_arr(cmd);
+		return (127);
+	}
+	else if (cmd[0][0] == '.' || cmd[0][0] == '/')
+		exit_code = execute_absolute_path(cmd, env);
+	else
+		exit_code = execute_normal_command(env, cmd);
+	return (exit_code);
 }

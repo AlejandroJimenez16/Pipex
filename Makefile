@@ -6,7 +6,7 @@
 #    By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/03 17:00:20 by alejandj          #+#    #+#              #
-#    Updated: 2025/05/16 01:08:04 by alejandj         ###   ########.fr        #
+#    Updated: 2025/05/29 16:22:47 by alejandj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,10 @@ CFLAGS = -Wall -Wextra -Werror -g -Iincludes
 LIBDIR = libft/
 OBJDIR = obj/
 
-SRC =	src/pipex.c			\
-		src/pipex_utils.c	\
-		src/execution.c		\
+SRC =	src/pipex.c				\
+		src/pipex_utils_1.c		\
+		src/pipex_utils_2.c		\
+		src/execution.c			\
 
 OBJECTS = $(SRC:src/%.c=$(OBJDIR)/%.o)
 

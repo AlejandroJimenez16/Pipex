@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 12:32:34 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/28 13:19:44 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:16:20 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ void		print_cmd_error(char *error, char *cmd);
 void		fail_args(void);
 char		**get_path_cmd(char *env[]);
 int			execute_commands(char *env[], char **cmd);
+int			manage_exit_execution(int permissions, char **cmd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/28 23:59:21 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:17:09 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,10 @@ void	*create_path(char *base, char *cmd)
 
 int	manage_execve_error(char **arr_path, char *path, char **cmd)
 {
-	ft_putstr_fd("ERROR: execve failed for command: ", 2);
-	ft_putstr_fd(cmd[0], 2);
-	ft_putstr_fd("\n", 2);
 	free_arr(arr_path);
 	free(path);
 	free_arr(cmd);
-	return (1);
+	return (127);
 }
 
 int	execute_absolute_path(char **cmd, char *env[])
@@ -49,8 +46,11 @@ int	execute_absolute_path(char **cmd, char *env[])
 		return (126);
 	}
 	else
+	{
 		execve(cmd[0], cmd, env);
-	return (1);
+		free_arr(cmd);
+		return (127);
+	}
 }
 
 int	execute_normal_command(char *env[], char **cmd)
@@ -58,29 +58,33 @@ int	execute_normal_command(char *env[], char **cmd)
 	char	**arr_path;
 	int		arr_path_id;
 	char	*path;
+	int		permissions;
 
+	permissions = 0;
 	arr_path = get_path_cmd(env);
 	arr_path_id = 0;
 	while (arr_path && arr_path[arr_path_id] != NULL)
 	{
 		path = create_path(arr_path[arr_path_id++], cmd[0]);
-		if (access(path, X_OK) == 0)
+		if (access(path, F_OK) == 0)
 		{
-			if (execve(path, cmd, env) == -1)
-				return (manage_execve_error(arr_path, path, cmd));
+			if (access(path, X_OK) == 0)
+			{
+				if (execve(path, cmd, env) == -1)
+					return (manage_execve_error(arr_path, path, cmd));
+			}
+			else
+				permissions = 1;
 		}
-		else
-			free(path);
+		free(path);
 	}
 	free_arr(arr_path);
-	print_cmd_error("command not found", cmd[0]);
-	free_arr(cmd);
-	return (127);
+	return (manage_exit_execution(permissions, cmd));
 }
 
 int	execute_commands(char *env[], char **cmd)
 {
-	int		exit_code;
+	int	exit_code;
 
 	if (!cmd || !cmd[0] || !cmd[0][0])
 	{

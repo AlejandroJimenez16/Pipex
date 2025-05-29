@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 16:53:38 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/29 01:10:15 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:16:59 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,14 @@ void	child_process_1(t_pipex *pipex)
 
 	pipex->process1 = fork();
 	if (pipex->process1 == -1)
-		print_errors("ERROR: creating process1", pipex->cmd1, pipex->cmd2);
+		print_errors(NULL, pipex->cmd1, pipex->cmd2);
 	else if (pipex->process1 == 0)
 	{
 		close(pipex->pipefd[0]);
 		if (dup2(pipex->fd_in, STDIN_FILENO) == -1)
-			print_errors("ERROR: dup2 process1 (stdin)",
-				pipex->cmd1, pipex->cmd2);
+			print_errors(NULL, pipex->cmd1, pipex->cmd2);
 		if (dup2(pipex->pipefd[1], STDOUT_FILENO) == -1)
-			print_errors("ERROR: dup2 process1 (stdout)",
-				pipex->cmd1, pipex->cmd2);
+			print_errors(NULL, pipex->cmd1, pipex->cmd2);
 		exit_code = execute_commands(pipex->env, pipex->cmd1);
 		free_arr(pipex->cmd2);
 		exit(exit_code);
@@ -40,16 +38,14 @@ void	child_process_2(t_pipex *pipex)
 
 	pipex->process2 = fork();
 	if (pipex->process2 == -1)
-		print_errors("ERROR: creating process2", pipex->cmd1, pipex->cmd2);
+		print_errors(NULL, pipex->cmd1, pipex->cmd2);
 	else if (pipex->process2 == 0)
 	{
 		close(pipex->pipefd[1]);
 		if (dup2(pipex->pipefd[0], STDIN_FILENO) == -1)
-			print_errors("ERROR: dup2 process2 (stdin)",
-				pipex->cmd1, pipex->cmd2);
+			print_errors(NULL, pipex->cmd1, pipex->cmd2);
 		if (dup2(pipex->fd_out, STDOUT_FILENO) == -1)
-			print_errors("ERROR: dup2 process2 (stdout)",
-				pipex->cmd1, pipex->cmd2);
+			print_errors(NULL, pipex->cmd1, pipex->cmd2);
 		exit_code = execute_commands(pipex->env, pipex->cmd2);
 		free_arr(pipex->cmd1);
 		exit(exit_code);
@@ -101,13 +97,13 @@ int	main(int argc, char *argv[], char *env[])
 		init_fds(&pipex.fd_in, &pipex.fd_out, argv[1], argv[4]);
 		pipex.cmd1 = ft_split(argv[2], ' ');
 		if (!pipex.cmd1)
-			print_errors("ERROR: parsing command 1", NULL, NULL);
+			exit(EXIT_FAILURE);
 		pipex.cmd2 = ft_split(argv[3], ' ');
 		if (!pipex.cmd2)
-			print_errors("ERROR: parsing command 2", pipex.cmd1, NULL);
+			print_errors(NULL, pipex.cmd1, NULL);
 		pipe_status = pipe(pipex.pipefd);
 		if (pipe_status == -1)
-			print_errors("ERROR: creating pipe", pipex.cmd1, pipex.cmd2);
+			print_errors(NULL, pipex.cmd1, pipex.cmd2);
 		child_process_1(&pipex);
 		child_process_2(&pipex);
 		cleanup(&pipex);

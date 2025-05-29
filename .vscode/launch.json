@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/pipex",
-      "args": ["infile", "sjdhawhs", "jksdhbHEABD", "outfile"],
+      "args": ["infile", "cat -e", "cat -e", "outfile"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],

@@ -6,7 +6,7 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 12:52:47 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/28 23:34:23 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/05/29 02:12:36 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	print_cmd_error(char *error, char *cmd)
 	char	*temp2;
 	char	*final;
 
-	temp1 = ft_strjoin(error, ": ");
-	temp2 = ft_strjoin(temp1, cmd);
+	temp1 = ft_strjoin(cmd, ": ");
+	temp2 = ft_strjoin(temp1, error);
 	final = ft_strjoin(temp2, "\n");
 	write(2, final, ft_strlen(final));
 	free(temp1);

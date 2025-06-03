@@ -6,13 +6,13 @@
 /*   By: alejandj <alejandj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 13:37:27 by alejandj          #+#    #+#             */
-/*   Updated: 2025/05/29 17:17:09 by alejandj         ###   ########.fr       */
+/*   Updated: 2025/06/03 10:22:37 by alejandj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	*create_path(char *base, char *cmd)
+char	*create_path(char *base, char *cmd)
 {
 	char	*temp;
 	char	*full;
